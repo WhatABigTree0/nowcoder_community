@@ -2,8 +2,10 @@ package com.nowcoder.community;
 
 
 import com.nowcoder.community.dao.LoginTicketMapper;
+import com.nowcoder.community.dao.MessageMapper;
 import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.LoginTicket;
+import com.nowcoder.community.entity.Message;
 import com.nowcoder.community.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 @ContextConfiguration(classes = CommunityApplication.class)
@@ -20,6 +23,9 @@ public class MapperTests {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
 
     @Test
     public void testSelectUser(){
@@ -36,6 +42,14 @@ public class MapperTests {
         loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
 
         loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+    @Test
+    public void testSelectLetters() {
+        List<Message> list = messageMapper.selectConversations(111,0,20);
+        for(Message message : list){
+            System.out.println(message);
+        }
     }
 
 
