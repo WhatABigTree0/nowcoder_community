@@ -21,7 +21,7 @@ public class DiscussPostService {
     private SensitiveFilter sensitiveFilter;
 
     public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit, int orderMode) {
-        return discussPostMapper.selectDiscussPosts(userId, offset, limit,orderMode);
+        return discussPostMapper.selectDiscussPosts(userId, offset, limit, orderMode);
     }
 
 

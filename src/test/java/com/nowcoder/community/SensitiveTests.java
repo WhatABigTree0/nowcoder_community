@@ -8,7 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest
 @ContextConfiguration(classes = CommunityApplication.class)
-public class SensitivrTests {
+public class SensitiveTests {
     @Autowired
     private SensitiveFilter sensitiveFilter;
 
