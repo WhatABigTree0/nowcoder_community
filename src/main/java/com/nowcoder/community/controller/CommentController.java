@@ -10,6 +10,7 @@ import com.nowcoder.community.service.DiscussPostService;
 import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,9 @@ public class CommentController implements CommunityConstant {
 
     @Autowired
     private DiscussPostService discussPostService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @RequestMapping(path = "/add/{discussPostId}", method = RequestMethod.POST)
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment) {
@@ -56,6 +60,15 @@ public class CommentController implements CommunityConstant {
         }
         eventProducer.fireEvent(event);
 
+        // 回复帖子相当于更改了帖子信息，需要触发事件  以便更新到es
+        if(comment.getEntityType() == ENTITY_TYPE_POST) {
+            event = new Event()
+                    .setTopic(TOPIC_PUBLISH)
+                    .setUserId(comment.getUserId())
+                    .setEntityType(ENTITY_TYPE_POST)
+                    .setEntityId(discussPostId);
+            eventProducer.fireEvent(event);
+        }
 
         return "redirect:/discuss/detail/" + discussPostId;
     }
